@@ -5,10 +5,10 @@ using Microsoft.Extensions.Primitives;
 
 namespace ApiOAuthEmpleados.Repository
 {
-    public class RepositoryEmpleados
+    public class RepositoryHospitals
     {
         private HospitalContext context;
-        public RepositoryEmpleados(HospitalContext context)
+        public RepositoryHospitals(HospitalContext context)
         {
             this.context = context;
         }
@@ -31,6 +31,12 @@ namespace ApiOAuthEmpleados.Repository
                 && x.Apellido == apellido);
         }
 
-        
+        public async Task<List<Empleado>> GetCompisEmpleadosAsync
+            (int idDepartamento)
+        {
+            return await this.context.Empleados
+                .Where(x => x.IdDepartamento == idDepartamento)
+                .ToListAsync();
+        }
     }
 }

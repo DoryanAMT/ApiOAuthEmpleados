@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(helper.GetAuthenticateSchema())
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddTransient<RepositoryEmpleados>();
+builder.Services.AddTransient<RepositoryHospitals>();
 string connectionString = builder.Configuration.GetConnectionString("SqlAzure");
 builder.Services.AddDbContext<HospitalContext>
     (options => options.UseSqlServer(connectionString));
