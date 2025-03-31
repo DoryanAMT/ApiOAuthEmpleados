@@ -50,7 +50,8 @@ namespace ApiOAuthEmpleados.Controllers
                 //  CREAMOS UN ARRAY DE CLAIMS
                 Claim[] informacion = new[]
                 {
-                    new Claim("UserData", jsonEmpleado)
+                    new Claim("UserData", jsonEmpleado),
+                    new Claim(ClaimTypes.Role, empleado.Oficio)
                 };
 
 
