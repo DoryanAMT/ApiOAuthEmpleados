@@ -1,4 +1,5 @@
-﻿using ApiOAuthEmpleados.Models;
+﻿using ApiOAuthEmpleados.Helpers;
+using ApiOAuthEmpleados.Models;
 using ApiOAuthEmpleados.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,9 +14,13 @@ namespace ApiOAuthEmpleados.Controllers
     public class EmpleadosController : ControllerBase
     {
         private RepositoryHospitals repo;
-        public EmpleadosController(RepositoryHospitals repo)
+        private HelperEmpleadoToken helper;
+        public EmpleadosController(
+            RepositoryHospitals repo,
+            HelperEmpleadoToken helper)
         {
             this.repo = repo;
+            this.helper = helper;
         }
         [HttpGet]
         public async Task<ActionResult<List<Empleado>>> GetEmpleados()
@@ -33,24 +38,18 @@ namespace ApiOAuthEmpleados.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<Empleado>> Perfil()
+        public async Task<ActionResult<EmpleadoModel>> Perfil()
         {
-            Claim claim = HttpContext.User.FindFirst
-                (x => x.Type == "UserData");
-            string json = claim.Value;
-            Empleado empleado = JsonConvert.DeserializeObject<Empleado>(json);
-            return await this.repo.FindEmpleadoAsync(empleado.IdEmpleado);
+            EmpleadoModel model = this.helper.GetEmpleado();
+            return model;
         }
         [Authorize(Roles = "PRESIDENTE")]
         [HttpGet]
         [Route("[action]")]
         public async Task<ActionResult<List<Empleado>>> Compis()
         {
-            string json = HttpContext.User.FindFirst
-                (x => x.Type == "UserData").Value;
-            Empleado empleado = JsonConvert
-                .DeserializeObject<Empleado>(json);
-            return await this.repo.GetCompisEmpleadosAsync(empleado.IdDepartamento);
+            EmpleadoModel model = this.helper.GetEmpleado();
+            return await this.repo.GetCompisEmpleadosAsync(model.IdDepartamento);
 
         }
         [HttpGet]

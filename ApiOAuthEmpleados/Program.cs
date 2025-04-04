@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+HelperCryptography.Initialize(builder.Configuration);
+//  INYECTAMOS httContextAccessor PORQUE QUIERO ACCEDER A INFORMACION DEL USUARIO EN CLASES QUE NO TENGA USUARIO
+builder.Services.AddHttpContextAccessor();
+
+
 //  CREAMOS UNA INSTANCIA DE NUESTRO HELPER
 HelperActionServicesOAuth helper =
     new HelperActionServicesOAuth(builder.Configuration);
@@ -18,6 +23,7 @@ builder.Services.AddAuthentication(helper.GetAuthenticateSchema())
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<HelperEmpleadoToken>();
 builder.Services.AddTransient<RepositoryHospitals>();
 string connectionString = builder.Configuration.GetConnectionString("SqlAzure");
 builder.Services.AddDbContext<HospitalContext>
